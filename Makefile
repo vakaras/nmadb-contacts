@@ -1,4 +1,4 @@
-PACKAGES={package_name}
+PACKAGES=nmadb_contacts
 
 test:
 	bin/test $(PACKAGES) \
