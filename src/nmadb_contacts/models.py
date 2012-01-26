@@ -1,10 +1,11 @@
+
 from django.db import models
 from django.utils.translation import ugettext as _
 
 from django_db_utils import models as db_models
 
 
-class HumanInfo(models.Model):
+class Human(models.Model):
     """ Information about human.
     """
 
@@ -16,6 +17,11 @@ class HumanInfo(models.Model):
     first_name = db_models.FirstNameField()
 
     last_name = db_models.LastNameField()
+
+    old_last_name = db_models.LastNameField(
+            verbose_name=_(u'Old last name'),
+            blank=True,
+            )
 
     gender = models.CharField(
             max_length=2,
@@ -29,19 +35,27 @@ class HumanInfo(models.Model):
 
     birth_date = models.DateField(
             blank=True,
+            null=True,
             )
 
-    identity_code = db_models.IdentityCodeField()
-
-    main_address = models.ForeignKey(
-            'Address',
-            #limit_choices_to = {'human': self},
+    identity_code = db_models.IdentityCodeField(
             blank=True,
             null=True,
             )
 
+#   FIXME: Uncommenting this kills admin site.
+#   main_address = models.ForeignKey(
+#           'Address',
+#           #limit_choices_to = {'human': self},
+#           blank=True,
+#           null=True,
+#           related_name='+',
+#           )
+
     class Meta(object):
         ordering = [u'last_name', u'first_name',]
+        verbose_name = _(u'Human')
+        verbose_name_plural = _(u'Humans')
 
     def __unicode__(self):
         return u'{0.id} {0.first_name} {0.last_name}'.format(self)
@@ -70,6 +84,8 @@ class Municipality(models.Model):
 
     class Meta(object):
         ordering = [u'town', u'municipality_type',]
+        verbose_name = _(u'municipality')
+        verbose_name_plural = _(u'municipalities')
 
     def __unicode__(self):
         return u'{0.town} {0.municipality_type}: {0.code}'.format(self)
@@ -80,7 +96,7 @@ class Address(models.Model):
     """
 
     human = models.ForeignKey(
-            HumanInfo,
+            Human,
             )
 
     town = models.CharField(
@@ -99,6 +115,124 @@ class Address(models.Model):
 
     class Meta(object):
         ordering = [u'municipality',]
+        verbose_name = _(u'address')
+        verbose_name_plural = _(u'addresses')
 
     def __unicode__(self):
         return u'{0.human} {0.address}'.format(self)
+
+
+class Contact(models.Model):
+    """ Base contact information.
+    """
+
+    human = models.ForeignKey(
+            Human,
+            )
+
+    last_time_used = models.DateTimeField(
+            blank=True,
+            null=True,
+            )
+
+    class Meta(object):
+        abstract = True
+        ordering = [u'human',]
+
+
+class Phone(Contact):
+    """ Phone number.
+    """
+
+    number = db_models.PhoneNumberField()
+
+    class Meta(object):
+        verbose_name = _(u'Phone')
+        verbose_name_plural = _(u'Phones')
+
+    def __unicode__(self):
+        return u'{0.human} {0.number}'.format(self)
+
+
+class Email(Contact):
+    """ Phone number.
+    """
+
+    address = models.EmailField(
+            max_length=128,
+            )
+
+    class Meta(object):
+        verbose_name = _(u'Email')
+        verbose_name_plural = _(u'Emails')
+
+    def __unicode__(self):
+        return u'{0.human} {0.address}'.format(self)
+
+
+class InfoForContracts(models.Model):
+    """ Information needed for contracts with human.
+    """
+
+    human = models.OneToOneField(
+            Human,
+            )
+
+    identity_card_number = models.CharField(
+            max_length=20,
+            blank=True,
+            )
+
+    identity_card_delivery_place = models.CharField(
+            max_length=45,
+            blank=True,
+            )
+
+    identity_card_delivery_date = models.DateField(
+            blank=True,
+            null=True,
+            )
+
+    social_insurance_number = models.CharField(
+            max_length=20,
+            blank=True,
+            )
+
+    bank_account = models.CharField(
+            max_length=30,
+            blank=True,
+            )
+
+    bank = models.CharField(
+            max_length=90,
+            blank=True,
+            )
+
+    class Meta(object):
+        ordering = [u'human']
+        verbose_name = _('Information for contracts')
+        verbose_name_plural = _('Informations for contracts')
+
+    def __unicode__(self):
+        return u'{0.human}'.format(self)
+
+
+class Institution(models.Model):
+    """ Institution, to which a human belongs.
+    """
+
+    human = models.ForeignKey(
+            Human,
+            )
+
+    title = models.CharField(
+            max_length=128,
+            )
+
+    class Meta(object):
+        ordering = [u'title',]
+        verbose_name = _(u'Institution')
+        verbose_name_plural = _(u'Institutions')
+
+    def __unicode__(self):
+        return u'{0.human} {0.title}'.format(self)
