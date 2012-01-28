@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.utils.translation import ugettext as _
 
+from django_db_utils.utils import join
 from nmadb_contacts import models
 from nmadb_contacts import forms
 
@@ -118,20 +119,14 @@ class HumanAdmin(admin.ModelAdmin):
         """ Returns concatenation of all used phone numbers.
         """
 
-        return u'; '.join([
-            phone.number
-            for phone in obj.phone_set.exclude(used=False)
-            ])
+        return join(obj.phone_set.exclude(used=False), 'number')
     get_phones.short_description = _("Phone numbers")
 
     def get_emails(self, obj):
         """ Returns concatenation of all used emails.
         """
 
-        return u'; '.join([
-            email.address
-            for email in obj.email_set.exclude(used=False)
-            ])
+        return join(obj.email_set.exclude(used=False), 'address')
     get_emails.short_description = _("Email addresses")
 
     def has_contracts_information(self, obj):
