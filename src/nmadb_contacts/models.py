@@ -1,4 +1,3 @@
-
 from django.db import models
 from django.utils.translation import ugettext as _
 
@@ -43,14 +42,13 @@ class Human(models.Model):
             null=True,
             )
 
-#   FIXME: Uncommenting this kills admin site.
-#   main_address = models.ForeignKey(
-#           'Address',
-#           #limit_choices_to = {'human': self},
-#           blank=True,
-#           null=True,
-#           related_name='+',
-#           )
+    main_address = models.ForeignKey(
+            'Address',
+            #limit_choices_to = FIXME
+            blank=True,
+            null=True,
+            related_name='+',
+            )
 
     class Meta(object):
         ordering = [u'last_name', u'first_name',]
@@ -119,7 +117,7 @@ class Address(models.Model):
         verbose_name_plural = _(u'addresses')
 
     def __unicode__(self):
-        return u'{0.human} {0.address}'.format(self)
+        return u'{0.address}'.format(self)
 
 
 class Contact(models.Model):

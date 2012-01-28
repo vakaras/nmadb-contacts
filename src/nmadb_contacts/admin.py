@@ -1,5 +1,7 @@
 from django.contrib import admin
+
 from nmadb_contacts import models
+from nmadb_contacts import forms
 
 
 class MunicipalityAdmin(admin.ModelAdmin):
@@ -26,6 +28,8 @@ class MunicipalityAdmin(admin.ModelAdmin):
 class HumanAdmin(admin.ModelAdmin):
     """ Administration for human.
     """
+
+    form = forms.HumanForm
 
     list_display = (
             'id',
