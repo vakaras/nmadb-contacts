@@ -40,6 +40,7 @@ class Human(models.Model):
     identity_code = db_models.IdentityCodeField(
             blank=True,
             null=True,
+            unique=True,
             )
 
     main_address = models.ForeignKey(
@@ -86,7 +87,8 @@ class Municipality(models.Model):
         verbose_name_plural = _(u'municipalities')
 
     def __unicode__(self):
-        return u'{0.town} {0.municipality_type}: {0.code}'.format(self)
+        return u'{0.town} {1}: {0.code}'.format(
+                self, self.get_municipality_type_display())
 
 
 class Address(models.Model):
@@ -133,6 +135,12 @@ class Contact(models.Model):
             null=True,
             )
 
+    used = models.NullBooleanField(
+            blank=True,
+            null=True,
+            help_text="If this contact is still used.",
+            )
+
     class Meta(object):
         abstract = True
         ordering = [u'human',]
@@ -142,7 +150,9 @@ class Phone(Contact):
     """ Phone number.
     """
 
-    number = db_models.PhoneNumberField()
+    number = db_models.PhoneNumberField(
+            unique=True,
+            )
 
     class Meta(object):
         verbose_name = _(u'Phone')
@@ -158,6 +168,7 @@ class Email(Contact):
 
     address = models.EmailField(
             max_length=128,
+            unique=True,
             )
 
     class Meta(object):
@@ -179,6 +190,7 @@ class InfoForContracts(models.Model):
     identity_card_number = models.CharField(
             max_length=20,
             blank=True,
+            unique=True,
             )
 
     identity_card_delivery_place = models.CharField(
@@ -194,6 +206,7 @@ class InfoForContracts(models.Model):
     social_insurance_number = models.CharField(
             max_length=20,
             blank=True,
+            unique=True,
             )
 
     bank_account = models.CharField(
