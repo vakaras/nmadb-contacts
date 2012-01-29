@@ -190,12 +190,13 @@ class InfoForContracts(models.Model):
     identity_card_number = models.CharField(
             max_length=20,
             blank=True,
-            unique=True,
+            null=True,
             )
 
     identity_card_delivery_place = models.CharField(
             max_length=45,
             blank=True,
+            null=True,
             )
 
     identity_card_delivery_date = models.DateField(
@@ -206,17 +207,19 @@ class InfoForContracts(models.Model):
     social_insurance_number = models.CharField(
             max_length=20,
             blank=True,
-            unique=True,
+            null=True,
             )
 
     bank_account = models.CharField(
             max_length=30,
             blank=True,
+            null=True,
             )
 
     bank = models.CharField(
             max_length=90,
             blank=True,
+            null=True,
             )
 
     class Meta(object):
