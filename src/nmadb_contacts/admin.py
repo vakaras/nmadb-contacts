@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.translation import ugettext as _
 
-from django_db_utils.utils import join
+from django_db_utils import utils
 from nmadb_contacts import models
 from nmadb_contacts import forms
 
@@ -105,6 +105,10 @@ class HumanAdmin(admin.ModelAdmin):
             InfoForContractsInline,
             ]
 
+    actions = [
+            'download_selected',
+            ]
+
     def get_address(self, obj):
         """ Returns main address, address column value.
         """
@@ -119,14 +123,14 @@ class HumanAdmin(admin.ModelAdmin):
         """ Returns concatenation of all used phone numbers.
         """
 
-        return join(obj.phone_set.exclude(used=False), 'number')
+        return utils.join(obj.phone_set.exclude(used=False), 'number')
     get_phones.short_description = _("Phone numbers")
 
     def get_emails(self, obj):
         """ Returns concatenation of all used emails.
         """
 
-        return join(obj.email_set.exclude(used=False), 'address')
+        return utils.join(obj.email_set.exclude(used=False), 'address')
     get_emails.short_description = _("Email addresses")
 
     def has_contracts_information(self, obj):
@@ -139,6 +143,21 @@ class HumanAdmin(admin.ModelAdmin):
             return False
     has_contracts_information.short_description = _("Contract info")
     has_contracts_information.boolean = True
+
+    def download_selected(self, request, queryset):
+        """ Generates ODS from queryset for download.
+        """
+        return utils.download_query(
+                queryset, u'ODS',
+                merge_rules=('nmadb_contacts:infoforcontracts',),
+                join_rules=(
+                    ('number', 'nmadb_contacts:phone',
+                        ({}, {'used': False})),
+                    ('address', 'nmadb_contacts:email',
+                        ({}, {'used': False})),
+                    )
+                )
+    download_selected.short_description = _(u'Download selected (ODS)')
 
 
 admin.site.register(models.Human, HumanAdmin)

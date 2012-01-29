@@ -19,6 +19,7 @@ setup(
             ],
         install_requires=[              # Dependencies for the package.
             'django_db_utils',
+            'odfpy',
             ],
         scripts=[],                     # List of python script files.
         #data_files=[('/etc/init.d', ['init-script'])]
