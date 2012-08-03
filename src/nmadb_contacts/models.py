@@ -1,5 +1,5 @@
 from django.db import models
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 from django_db_utils import models as db_models
 
@@ -35,6 +35,7 @@ class Human(models.Model):
     birth_date = models.DateField(
             blank=True,
             null=True,
+            verbose_name=_(u'birth date'),
             )
 
     identity_code = db_models.IdentityCodeField(
@@ -108,6 +109,7 @@ class Address(models.Model):
 
     human = models.ForeignKey(
             Human,
+            verbose_name=_(u'human'),
             )
 
     town = models.CharField(

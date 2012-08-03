@@ -1,0 +1,185 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-08-03 19:23+0300\n"
+"PO-Revision-Date: 2012-08-03 19:23+0300\n"
+"Last-Translator: Vytautas Astrauskas <vastrauskas@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
+
+#: admin.py:53
+#: admin.py:81
+#: admin.py:243
+msgid "ID"
+msgstr "ID"
+
+#: admin.py:54
+#: admin.py:82
+#: admin.py:244
+msgid "First name"
+msgstr "Vardas"
+
+#: admin.py:55
+#: admin.py:83
+#: admin.py:245
+msgid "Last name"
+msgstr "Pavardė"
+
+#: admin.py:56
+#: admin.py:84
+#: admin.py:246
+#: models.py:21
+msgid "Old last name"
+msgstr "Mergautinė pavardė"
+
+#: admin.py:57
+msgid "Town"
+msgstr "Miestas"
+
+#: admin.py:58
+msgid "Address"
+msgstr "Adresas"
+
+#: admin.py:59
+msgid "Municipality"
+msgstr "Savivaldybė"
+
+#: admin.py:85
+msgid "Last time used"
+msgstr "Paskutinį kartą naudotas"
+
+#: admin.py:86
+msgid "Used"
+msgstr "Naudotas"
+
+#: admin.py:103
+msgid "Phone number"
+msgstr "Telefono numeris"
+
+#: admin.py:120
+msgid "E-Mail address"
+msgstr "Elektroninio pašto adresas"
+
+#: admin.py:247
+msgid "Gender"
+msgstr "Lytis"
+
+#: admin.py:248
+msgid "Academic degree"
+msgstr "Akademinis laipsnis"
+
+#: admin.py:249
+msgid "Birth date"
+msgstr "Gimimo data"
+
+#: admin.py:250
+msgid "Identity code"
+msgstr "Asmens kodas"
+
+#: admin.py:251
+#: admin.py:262
+msgid "Main address"
+msgstr "Pagrindinis adresas"
+
+#: admin.py:269
+msgid "Phone numbers"
+msgstr "Telefono numeriai"
+
+#: admin.py:276
+msgid "Email addresses"
+msgstr "Elektroninio pašto adresai"
+
+#: admin.py:286
+msgid "Contract info"
+msgstr "Informacija kontraktams"
+
+#: models.py:12
+msgid "Male"
+msgstr "Vyras"
+
+#: models.py:13
+msgid "Female"
+msgstr "Moteris"
+
+#: models.py:38
+msgid "birth date"
+msgstr "gimimo data"
+
+#: models.py:57
+msgid "Human"
+msgstr "Žmogus"
+
+#: models.py:58
+msgid "Humans"
+msgstr "Žmonės"
+
+#: models.py:69
+msgid "town"
+msgstr "miestas"
+
+#: models.py:70
+msgid "district"
+msgstr "rajonas"
+
+#: models.py:98
+msgid "municipality"
+msgstr "savivaldybė"
+
+#: models.py:99
+msgid "municipalities"
+msgstr "savivaldybės"
+
+#: models.py:112
+msgid "human"
+msgstr "žmogus"
+
+#: models.py:131
+msgid "address"
+msgstr "adresas"
+
+#: models.py:132
+msgid "addresses"
+msgstr "adresai"
+
+#: models.py:171
+msgid "Phone"
+msgstr "Telefonas"
+
+#: models.py:172
+msgid "Phones"
+msgstr "Telefonai"
+
+#: models.py:188
+msgid "Email"
+msgstr "El. paštas"
+
+#: models.py:189
+msgid "Emails"
+msgstr "El. paštai"
+
+#: models.py:240
+msgid "Information for contracts"
+msgstr "Informacija kontraktams"
+
+#: models.py:241
+msgid "Informations for contracts"
+msgstr "Informacijos kontraktams"
+
+#: models.py:261
+msgid "Institution"
+msgstr "Įstaiga"
+
+#: models.py:262
+msgid "Institutions"
+msgstr "Įstaigos"
+
