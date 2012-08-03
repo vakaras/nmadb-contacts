@@ -81,13 +81,24 @@ class Municipality(models.Model):
 
     code = models.PositiveSmallIntegerField()
 
+    @property
+    def title(self):
+        """ Return generated title of municipality.
+        """
+
+        if self.municipality_type:
+            return u'{0} {1}'.format(
+                    self.town, self.get_municipality_type_display())
+        else:
+            return self.town
+
     class Meta(object):
         ordering = [u'town', u'municipality_type',]
         verbose_name = _(u'municipality')
         verbose_name_plural = _(u'municipalities')
 
     def __unicode__(self):
-        return u'{0.town} {1}: {0.code}'.format(
+        return u'{0.title}: {0.code}'.format(
                 self, self.get_municipality_type_display())
 
 

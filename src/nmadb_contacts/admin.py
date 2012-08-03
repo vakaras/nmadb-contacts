@@ -12,6 +12,7 @@ class MunicipalityAdmin(admin.ModelAdmin):
 
     list_display = (
             'id',
+            'title',
             'code',
             'town',
             'municipality_type',
