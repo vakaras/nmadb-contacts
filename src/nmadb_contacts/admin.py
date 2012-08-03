@@ -1,12 +1,13 @@
 from django.contrib import admin
 from django.utils.translation import ugettext as _
 
-from django_db_utils import utils
+from django_db_utils import utils as db_utils
 from nmadb_contacts import models
 from nmadb_contacts import forms
+from nmadb_utils import admin as utils
 
 
-class MunicipalityAdmin(admin.ModelAdmin):
+class MunicipalityAdmin(utils.ModelAdmin):
     """ Administration for municipality.
     """
 
@@ -25,6 +26,138 @@ class MunicipalityAdmin(admin.ModelAdmin):
     search_fields = (
             'town',
             'code',
+            )
+
+
+class AddressAdmin(utils.ModelAdmin):
+    """ Administration for addresses.
+    """
+
+    list_display = (
+            'id',
+            'human',
+            'town',
+            'address',
+            'municipality',
+            )
+
+    search_fields = (
+            'town',
+            'address',
+            'human__first_name',
+            'human__last_name',
+            'human__old_last_name',
+            )
+
+    sheet_mapping = (
+            (_(u'ID'), ('id',)),
+            (_(u'First name'), ('human', 'first_name',)),
+            (_(u'Last name'), ('human', 'last_name',)),
+            (_(u'Old last name'), ('human', 'old_last_name',)),
+            (_(u'Town'), ('town',)),
+            (_(u'Address'), ('address',)),
+            (_(u'Municipality'), ('municipality', 'title',)),
+            )
+
+
+class ContactAdmin(utils.ModelAdmin):
+    """ Administration for contacts.
+    """
+
+    list_display = (
+            'id',
+            'human',
+            'last_time_used',
+            'used',
+            )
+
+    search_fields = (
+            'human__first_name',
+            'human__last_name',
+            'human__old_last_name',
+            )
+
+    sheet_mapping = (
+            (_(u'ID'), ('id',)),
+            (_(u'First name'), ('human', 'first_name',)),
+            (_(u'Last name'), ('human', 'last_name',)),
+            (_(u'Old last name'), ('human', 'old_last_name',)),
+            (_(u'Last time used'), ('last_time_used',)),
+            (_(u'Used'), ('used',)),
+            )
+
+
+class PhoneAdmin(ContactAdmin):
+    """ Administration for phones.
+    """
+
+    list_display = ContactAdmin.list_display + (
+            'number',
+            )
+
+    search_fields = ContactAdmin.search_fields + (
+            'number',
+            )
+
+    sheet_mapping = ContactAdmin.sheet_mapping + (
+            (_(u'Phone number'), ('number',)),
+            )
+
+
+class EmailAdmin(ContactAdmin):
+    """ Administration for emails.
+    """
+
+    list_display = ContactAdmin.list_display + (
+            'address',
+            )
+
+    search_fields = ContactAdmin.search_fields + (
+            'address',
+            )
+
+    sheet_mapping = ContactAdmin.sheet_mapping + (
+            (_(u'E-Mail address'), ('address',)),
+            )
+
+
+class InfoForContractsAdmin(utils.ModelAdmin):
+    """ Administration for info for contracts.
+    """
+
+    list_display = (
+            'id',
+            'human',
+            'identity_card_number',
+            'identity_card_delivery_place',
+            'identity_card_delivery_date',
+            'social_insurance_number',
+            'bank_account',
+            'bank',
+            )
+
+    search_fields = (
+            'human__first_name',
+            'human__last_name',
+            'human__old_last_name',
+            )
+
+
+class InstitutionAdmin(utils.ModelAdmin):
+    """ Administration for institutions.
+    """
+
+    list_display = (
+            'id',
+            'human',
+            'title',
+            )
+
+    search_fields = (
+            'human__first_name',
+            'human__last_name',
+            'human__old_last_name',
+            'title',
             )
 
 
@@ -73,7 +206,7 @@ class InfoForContractsInline(admin.StackedInline):
     extra = 0
 
 
-class HumanAdmin(admin.ModelAdmin):
+class HumanAdmin(utils.ModelAdmin):
     """ Administration for human.
     """
 
@@ -106,9 +239,17 @@ class HumanAdmin(admin.ModelAdmin):
             InfoForContractsInline,
             ]
 
-    actions = [
-            'download_selected',
-            ]
+    sheet_mapping = (
+            (_(u'ID'), ('id',)),
+            (_(u'First name'), ('first_name',)),
+            (_(u'Last name'), ('last_name',)),
+            (_(u'Old last name'), ('old_last_name',)),
+            (_(u'Gender'), ('get_gender_display',)),
+            (_(u'Academic degree'), ('academic_degree',)),
+            (_(u'Birth date'), ('birth_date',)),
+            (_(u'Identity code'), ('identity_code',)),
+            (_(u'Main address'), ('main_address',)),
+            )
 
     def get_address(self, obj):
         """ Returns main address, address column value.
@@ -124,14 +265,14 @@ class HumanAdmin(admin.ModelAdmin):
         """ Returns concatenation of all used phone numbers.
         """
 
-        return utils.join(obj.phone_set.exclude(used=False), 'number')
+        return db_utils.join(obj.phone_set.exclude(used=False), 'number')
     get_phones.short_description = _("Phone numbers")
 
     def get_emails(self, obj):
         """ Returns concatenation of all used emails.
         """
 
-        return utils.join(obj.email_set.exclude(used=False), 'address')
+        return db_utils.join(obj.email_set.exclude(used=False), 'address')
     get_emails.short_description = _("Email addresses")
 
     def has_contracts_information(self, obj):
@@ -145,26 +286,11 @@ class HumanAdmin(admin.ModelAdmin):
     has_contracts_information.short_description = _("Contract info")
     has_contracts_information.boolean = True
 
-    def download_selected(self, request, queryset):
-        """ Generates ODS from queryset for download.
-        """
-        return utils.download_query(
-                queryset, u'ODS',
-                merge_rules=('nmadb_contacts:infoforcontracts',),
-                join_rules=(
-                    ('number', 'nmadb_contacts:phone',
-                        ({}, {'used': False})),
-                    ('address', 'nmadb_contacts:email',
-                        ({}, {'used': False})),
-                    )
-                )
-    download_selected.short_description = _(u'Download selected (ODS)')
-
 
 admin.site.register(models.Human, HumanAdmin)
 admin.site.register(models.Municipality, MunicipalityAdmin)
-admin.site.register(models.Address)
-admin.site.register(models.Phone)
-admin.site.register(models.Email)
-admin.site.register(models.InfoForContracts)
-admin.site.register(models.Institution)
+admin.site.register(models.Address, AddressAdmin)
+admin.site.register(models.Phone, PhoneAdmin)
+admin.site.register(models.Email, EmailAdmin)
+admin.site.register(models.InfoForContracts, InfoForContractsAdmin)
+admin.site.register(models.Institution, InstitutionAdmin)
