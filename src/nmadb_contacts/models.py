@@ -82,7 +82,6 @@ class Municipality(models.Model):
 
     code = models.PositiveSmallIntegerField()
 
-    @property
     def title(self):
         """ Return generated title of municipality.
         """
@@ -99,8 +98,7 @@ class Municipality(models.Model):
         verbose_name_plural = _(u'municipalities')
 
     def __unicode__(self):
-        return u'{0.title}: {0.code}'.format(
-                self, self.get_municipality_type_display())
+        return u'{0}: {1}'.format(self.title(), self.code)
 
 
 class Address(models.Model):
