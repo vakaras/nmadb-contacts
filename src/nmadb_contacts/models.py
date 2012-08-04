@@ -25,11 +25,13 @@ class Human(models.Model):
     gender = models.CharField(
             max_length=2,
             choices=GENDER_CHOICES,
+            verbose_name=_(u'gender'),
             )
 
     academic_degree = models.CharField(
             max_length=45,
             blank=True,
+            verbose_name=_(u'academic degree'),
             )
 
     birth_date = models.DateField(
@@ -50,6 +52,7 @@ class Human(models.Model):
             blank=True,
             null=True,
             related_name='+',
+            verbose_name=_(u'main address'),
             )
 
     class Meta(object):
@@ -72,15 +75,19 @@ class Municipality(models.Model):
 
     town = models.CharField(
             max_length=45,
+            verbose_name=_(u'town'),
             )
 
     municipality_type = models.CharField(
             max_length=2,
             choices=MUNICIPALITY_TYPES,
             blank=True,
+            verbose_name=_(u'type'),
             )
 
-    code = models.PositiveSmallIntegerField()
+    code = models.PositiveSmallIntegerField(
+            verbose_name=_(u'code'),
+            )
 
     def title(self):
         """ Return generated title of municipality.
@@ -91,6 +98,7 @@ class Municipality(models.Model):
                     self.town, self.get_municipality_type_display())
         else:
             return self.town
+    title.short_description = _(u'title')
 
     class Meta(object):
         ordering = [u'town', u'municipality_type',]
@@ -112,16 +120,19 @@ class Address(models.Model):
 
     town = models.CharField(
             max_length=45,
+            verbose_name=_(u'town'),
             )
 
     address = models.CharField(
             max_length=90,
+            verbose_name=_(u'address'),
             )
 
     municipality = models.ForeignKey(
             Municipality,
             blank=True,
             null=True,
+            verbose_name=_(u'municipality'),
             )
 
     class Meta(object):
@@ -139,17 +150,20 @@ class Contact(models.Model):
 
     human = models.ForeignKey(
             Human,
+            verbose_name=_(u'human'),
             )
 
     last_time_used = models.DateTimeField(
             blank=True,
             null=True,
+            verbose_name=_(u'last time used'),
             )
 
     used = models.NullBooleanField(
             blank=True,
             null=True,
-            help_text="If this contact is still used.",
+            help_text=_(u'If this contact is still used.'),
+            verbose_name=_(u'used'),
             )
 
     class Meta(object):
@@ -180,6 +194,7 @@ class Email(Contact):
     address = models.EmailField(
             max_length=128,
             unique=True,
+            verbose_name=_(u'address'),
             )
 
     class Meta(object):
@@ -196,41 +211,48 @@ class InfoForContracts(models.Model):
 
     human = models.OneToOneField(
             Human,
+            verbose_name=_(u'human'),
             )
 
     identity_card_number = models.CharField(
             max_length=20,
             blank=True,
             null=True,
+            verbose_name=_(u'identity card number'),
             )
 
     identity_card_delivery_place = models.CharField(
             max_length=45,
             blank=True,
             null=True,
+            verbose_name=_(u'identity card delivery place'),
             )
 
     identity_card_delivery_date = models.DateField(
             blank=True,
             null=True,
+            verbose_name=_(u'identity card delivery date'),
             )
 
     social_insurance_number = models.CharField(
             max_length=20,
             blank=True,
             null=True,
+            verbose_name=_(u'social insurance number'),
             )
 
     bank_account = models.CharField(
             max_length=30,
             blank=True,
             null=True,
+            verbose_name=_(u'bank account'),
             )
 
     bank = models.CharField(
             max_length=90,
             blank=True,
             null=True,
+            verbose_name=_(u'bank'),
             )
 
     class Meta(object):
@@ -248,10 +270,12 @@ class Institution(models.Model):
 
     human = models.ForeignKey(
             Human,
+            verbose_name = _('human'),
             )
 
     title = models.CharField(
             max_length=128,
+            verbose_name = _('title'),
             )
 
     class Meta(object):

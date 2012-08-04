@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-03 19:23+0300\n"
-"PO-Revision-Date: 2012-08-03 19:23+0300\n"
+"POT-Creation-Date: 2012-08-04 14:33+0300\n"
+"PO-Revision-Date: 2012-08-04 14:34+0300\n"
 "Last-Translator: Vytautas Astrauskas <vastrauskas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -111,75 +111,144 @@ msgstr "Vyras"
 msgid "Female"
 msgstr "Moteris"
 
-#: models.py:38
+#: models.py:28
+msgid "gender"
+msgstr "lytis"
+
+#: models.py:34
+msgid "academic degree"
+msgstr "akademinis laipsnis"
+
+#: models.py:40
 msgid "birth date"
 msgstr "gimimo data"
 
-#: models.py:57
+#: models.py:55
+msgid "main address"
+msgstr "pagrindinis adresas"
+
+#: models.py:60
 msgid "Human"
 msgstr "Žmogus"
 
-#: models.py:58
+#: models.py:61
 msgid "Humans"
 msgstr "Žmonės"
 
-#: models.py:69
+#: models.py:72
+#: models.py:78
+#: models.py:123
 msgid "town"
 msgstr "miestas"
 
-#: models.py:70
+#: models.py:73
 msgid "district"
 msgstr "rajonas"
 
-#: models.py:98
+#: models.py:85
+msgid "type"
+msgstr "tipas"
+
+#: models.py:89
+msgid "code"
+msgstr "kodas"
+
+#: models.py:101
+#: models.py:278
+msgid "title"
+msgstr "pavadinimas"
+
+#: models.py:105
+#: models.py:135
 msgid "municipality"
 msgstr "savivaldybė"
 
-#: models.py:99
+#: models.py:106
 msgid "municipalities"
 msgstr "savivaldybės"
 
-#: models.py:112
+#: models.py:118
+#: models.py:153
+#: models.py:214
+#: models.py:273
 msgid "human"
 msgstr "žmogus"
 
-#: models.py:131
+#: models.py:128
+#: models.py:140
+#: models.py:197
 msgid "address"
 msgstr "adresas"
 
-#: models.py:132
+#: models.py:141
 msgid "addresses"
 msgstr "adresai"
 
-#: models.py:171
+#: models.py:159
+msgid "last time used"
+msgstr "paskutinį kartą naudotas"
+
+#: models.py:165
+msgid "If this contact is still used."
+msgstr "Jei šis kontaktas yra vis dar naudojamas."
+
+#: models.py:166
+msgid "used"
+msgstr "naudotas"
+
+#: models.py:183
 msgid "Phone"
 msgstr "Telefonas"
 
-#: models.py:172
+#: models.py:184
 msgid "Phones"
 msgstr "Telefonai"
 
-#: models.py:188
+#: models.py:201
 msgid "Email"
 msgstr "El. paštas"
 
-#: models.py:189
+#: models.py:202
 msgid "Emails"
 msgstr "El. paštai"
 
-#: models.py:240
+#: models.py:221
+msgid "identity card number"
+msgstr "asmens kodas"
+
+#: models.py:228
+msgid "identity card delivery place"
+msgstr "tapatybės kortelės išdavimo vieta"
+
+#: models.py:234
+msgid "identity card delivery date"
+msgstr "tapatybės kortelės išdavimo data"
+
+#: models.py:241
+msgid "social insurance number"
+msgstr "socialinio draudimo numeris"
+
+#: models.py:248
+msgid "bank account"
+msgstr "banko sąskaita"
+
+#: models.py:255
+msgid "bank"
+msgstr "bankas"
+
+#: models.py:260
 msgid "Information for contracts"
 msgstr "Informacija kontraktams"
 
-#: models.py:241
+#: models.py:261
 msgid "Informations for contracts"
 msgstr "Informacijos kontraktams"
 
-#: models.py:261
+#: models.py:283
 msgid "Institution"
 msgstr "Įstaiga"
 
-#: models.py:262
+#: models.py:284
 msgid "Institutions"
 msgstr "Įstaigos"
 
