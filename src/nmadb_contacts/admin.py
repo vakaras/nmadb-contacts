@@ -251,6 +251,9 @@ class HumanAdmin(utils.ModelAdmin):
             (_(u'Main address'), ('main_address',)),
             )
 
+    list_max_show_all = 100
+    list_per_page = 10
+
     def get_address(self, obj):
         """ Returns main address, address column value.
         """
