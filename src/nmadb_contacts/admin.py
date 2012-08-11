@@ -236,6 +236,7 @@ class HumanAdmin(utils.ModelAdmin):
             EmailInline,
             PhoneInline,
             AddressInline,
+            InstitutionInline,
             InfoForContractsInline,
             ]
 
