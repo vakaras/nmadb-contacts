@@ -1,10 +1,13 @@
 from django.contrib import admin
 from django.utils.translation import ugettext as _
+from django.shortcuts import render
 
 from django_db_utils import utils as db_utils
 from nmadb_contacts import models
 from nmadb_contacts import forms
 from nmadb_utils import admin as utils
+from nmadb_automation import forms as automation_forms
+from nmadb_automation import tasks
 
 
 class MunicipalityAdmin(utils.ModelAdmin):
@@ -119,6 +122,50 @@ class EmailAdmin(ContactAdmin):
     sheet_mapping = ContactAdmin.sheet_mapping + (
             (_(u'E-Mail address'), ('address',)),
             )
+
+    actions = ContactAdmin.actions + [
+            'send_mail',
+            ]
+
+    def send_mail(self, request, queryset):
+        """ Allows to send email.
+        """
+        form = None
+        if 'apply' in request.POST:
+            form = automation_forms.AdminMailForm(
+                    request.POST,
+                    request.FILES)
+            if form.is_valid():
+                attachments = [
+                        (a.name, a.read())
+                        for a in request.FILES.getlist('attachments')]
+                query = [(obj.address, {'obj': obj}) for obj in queryset]
+                cd = form.cleaned_data
+                tasks.send_mass_mail(
+                        query, cd['subject'], cd['body'], cd['username'],
+                        attachments=attachments,
+                        async=len(attachments) == 0,
+                        **cd
+                        )
+                return render(
+                        request,
+                        'admin/send_email.html',
+                        {'form': form})
+        if not form:
+            form = automation_forms.AdminMailForm(
+                    initial = {
+                        'host': 'smtp.gmail.com',
+                        'port': '587',
+                        '_selected_action': [
+                            unicode(pk)
+                            for pk in queryset.values_list('id', flat=True)
+                            ]
+                        })
+        return render(
+                request,
+                'admin/send_email.html',
+                {'form': form})
+    send_mail.short_description = _(u'send email')
 
 
 class InfoForContractsAdmin(utils.ModelAdmin):
