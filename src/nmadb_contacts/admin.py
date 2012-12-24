@@ -125,7 +125,62 @@ class EmailAdmin(ContactAdmin):
 
     actions = ContactAdmin.actions + [
             'send_mail',
+            'send_sync_template_mail',
+            'send_async_template_mail',
             ]
+
+    def send_template_mail(self, async, request, queryset):
+        """ Sends template email.
+        """
+        form = None
+        errors = None
+        if 'apply' in request.POST:
+            form = automation_forms.AdminTemplateMailForm(request.POST)
+            if form.is_valid():
+                query = [(obj.address, {'obj': obj}) for obj in queryset]
+                cd = form.cleaned_data
+                try:
+                    tasks.send_mass_template_mail(
+                            cd['email_template'],
+                            query,
+                            cd['username'],
+                            async=async,
+                            **cd
+                            )
+                except Exception as e:
+                    errors = unicode(e)
+                return render(
+                        request,
+                        'admin/send_template_email.html',
+                        {'form': form, 'errors': errors, 'async': async})
+        if not form:
+            form = automation_forms.AdminTemplateMailForm(
+                    initial={
+                        'host': 'smtp.gmail.com',
+                        'port': '587',
+                        '_selected_action': [
+                            unicode(pk)
+                            for pk in queryset.values_list('id', flat=True)
+                            ]
+                        })
+        return render(
+                request,
+                'admin/send_template_email.html',
+                {'form': form, 'errors': errors, 'async': async})
+
+    def send_sync_template_mail(self, request, queryset):
+        """ Sends template email synchronously.
+        """
+        return self.send_template_mail(False, request, queryset)
+    send_sync_template_mail.short_description = _(
+            u'send template mail synchronously')
+
+    def send_async_template_mail(self, request, queryset):
+        """ Sends template email asynchronously.
+        """
+        return self.send_template_mail(True, request, queryset)
+    send_async_template_mail.short_description = _(
+            u'send template mail asynchronously')
 
     def send_mail(self, request, queryset):
         """ Allows to send email.
