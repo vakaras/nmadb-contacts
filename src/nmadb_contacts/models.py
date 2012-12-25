@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -203,6 +205,14 @@ class Email(Contact):
 
     def __unicode__(self):
         return u'{0.human} {0.address}'.format(self)
+
+    def get_address_and_mark(self):
+        """ Returns email address and marks that email last time
+        was used now. (Also performs save.)
+        """
+        self.last_time_used = datetime.datetime.now()
+        self.save()
+        return self.address
 
 
 class InfoForContracts(models.Model):

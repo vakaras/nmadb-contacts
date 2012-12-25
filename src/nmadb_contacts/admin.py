@@ -1,13 +1,11 @@
 from django.contrib import admin
 from django.utils.translation import ugettext as _
-from django.shortcuts import render
 
 from django_db_utils import utils as db_utils
 from nmadb_contacts import models
 from nmadb_contacts import forms
 from nmadb_utils import admin as utils
-from nmadb_automation import forms as automation_forms
-from nmadb_automation import tasks
+from nmadb_automation import mail
 
 
 class MunicipalityAdmin(utils.ModelAdmin):
@@ -129,97 +127,31 @@ class EmailAdmin(ContactAdmin):
             'send_async_template_mail',
             ]
 
-    def send_template_mail(self, async, request, queryset):
-        """ Sends template email.
-        """
-        form = None
-        errors = None
-        if 'apply' in request.POST:
-            form = automation_forms.AdminTemplateMailForm(request.POST)
-            if form.is_valid():
-                query = [(obj.address, {'obj': obj}) for obj in queryset]
-                cd = form.cleaned_data
-                try:
-                    tasks.send_mass_template_mail(
-                            cd['email_template'],
-                            query,
-                            cd['username'],
-                            async=async,
-                            **cd
-                            )
-                except Exception as e:
-                    errors = unicode(e)
-                return render(
-                        request,
-                        'admin/send_template_email.html',
-                        {'form': form, 'errors': errors, 'async': async})
-        if not form:
-            form = automation_forms.AdminTemplateMailForm(
-                    initial={
-                        'host': 'smtp.gmail.com',
-                        'port': '587',
-                        '_selected_action': [
-                            unicode(pk)
-                            for pk in queryset.values_list('id', flat=True)
-                            ]
-                        })
-        return render(
-                request,
-                'admin/send_template_email.html',
-                {'form': form, 'errors': errors, 'async': async})
-
     def send_sync_template_mail(self, request, queryset):
         """ Sends template email synchronously.
         """
-        return self.send_template_mail(False, request, queryset)
+        return mail.send_template_mail_admin_action(
+                lambda obj: [(obj.get_address_and_mark(), {'obj': obj})],
+                False, request, queryset)
     send_sync_template_mail.short_description = _(
             u'send template mail synchronously')
 
     def send_async_template_mail(self, request, queryset):
         """ Sends template email asynchronously.
         """
-        return self.send_template_mail(True, request, queryset)
+        return mail.send_template_mail_admin_action(
+                lambda obj: [(obj.get_address_and_mark(), {'obj': obj})],
+                True, request, queryset)
     send_async_template_mail.short_description = _(
             u'send template mail asynchronously')
 
     def send_mail(self, request, queryset):
         """ Allows to send email.
         """
-        form = None
-        if 'apply' in request.POST:
-            form = automation_forms.AdminMailForm(
-                    request.POST,
-                    request.FILES)
-            if form.is_valid():
-                attachments = [
-                        (a.name, a.read())
-                        for a in request.FILES.getlist('attachments')]
-                query = [(obj.address, {'obj': obj}) for obj in queryset]
-                cd = form.cleaned_data
-                tasks.send_mass_mail(
-                        query, cd['subject'], cd['body'], cd['username'],
-                        attachments=attachments,
-                        async=len(attachments) == 0,
-                        **cd
-                        )
-                return render(
-                        request,
-                        'admin/send_email.html',
-                        {'form': form})
-        if not form:
-            form = automation_forms.AdminMailForm(
-                    initial = {
-                        'host': 'smtp.gmail.com',
-                        'port': '587',
-                        '_selected_action': [
-                            unicode(pk)
-                            for pk in queryset.values_list('id', flat=True)
-                            ]
-                        })
-        return render(
+        return mail.send_mail_admin_action(
+                lambda obj: [(obj.get_address_and_mark(), {'obj': obj})],
                 request,
-                'admin/send_email.html',
-                {'form': form})
+                queryset)
     send_mail.short_description = _(u'send email')
 
 
@@ -354,6 +286,12 @@ class HumanAdmin(utils.ModelAdmin):
             (_(u'Main address'), ('main_address',)),
             )
 
+    actions = utils.ModelAdmin.actions + [
+            'send_mail',
+            'send_sync_template_mail',
+            'send_async_template_mail',
+            ]
+
     list_max_show_all = 100
     list_per_page = 10
 
@@ -391,6 +329,42 @@ class HumanAdmin(utils.ModelAdmin):
             return False
     has_contracts_information.short_description = _("Contract info")
     has_contracts_information.boolean = True
+
+    def send_sync_template_mail(self, request, queryset):
+        """ Sends template email synchronously.
+        """
+        return mail.send_template_mail_admin_action(
+                lambda human: [
+                    (email.get_address_and_mark(), {'human': human})
+                    for email in human.email_set.all()
+                    if email.used is not False],
+                False, request, queryset)
+    send_sync_template_mail.short_description = _(
+            u'send template mail synchronously')
+
+    def send_async_template_mail(self, request, queryset):
+        """ Sends template email asynchronously.
+        """
+        return mail.send_template_mail_admin_action(
+                lambda human: [
+                    (email.get_address_and_mark(), {'human': human})
+                    for email in human.email_set.all()
+                    if email.used is not False],
+                True, request, queryset)
+    send_async_template_mail.short_description = _(
+            u'send template mail asynchronously')
+
+    def send_mail(self, request, queryset):
+        """ Allows to send email.
+        """
+        return mail.send_mail_admin_action(
+                lambda human: [
+                    (email.get_address_and_mark(), {'human': human})
+                    for email in human.email_set.all()
+                    if email.used is not False],
+                request,
+                queryset)
+    send_mail.short_description = _(u'send email')
 
 
 admin.site.register(models.Human, HumanAdmin)
