@@ -5,6 +5,14 @@ from django.utils.translation import ugettext_lazy as _
 
 from django_db_utils import models as db_models
 
+# South introspection.
+from south.modelsinspector import add_introspection_rules
+add_introspection_rules([], ["^django\_db\_utils\.models\.FirstNameField"])
+add_introspection_rules([], ["^django\_db\_utils\.models\.LastNameField"])
+add_introspection_rules(
+        [],
+        ["^django\_db\_utils\.models\.IdentityCodeField"])
+
 
 class Human(models.Model):
     """ Information about human.
