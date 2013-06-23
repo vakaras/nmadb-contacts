@@ -1,7 +1,6 @@
-import datetime
-
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.utils import timezone
 
 from django_db_utils import models as db_models
 
@@ -218,7 +217,7 @@ class Email(Contact):
         """ Returns email address and marks that email last time
         was used now. (Also performs save.)
         """
-        self.last_time_used = datetime.datetime.now()
+        self.last_time_used = timezone.now()
         self.save()
         return self.address
 
