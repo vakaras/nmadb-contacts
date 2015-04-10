@@ -16,3 +16,4 @@ class HumanForm(forms.ModelForm):
 
     class Meta(object):
         model = models.Human
+        exclude = ()
